@@ -4,16 +4,17 @@ function fromWei(value) {
     return value / ether;
 }
 
-function PendingReward(pid, tokenName, pending) {
-    this.pid = pid;
-    this.tokenName = tokenName;
-    this.pending = pending;
+function round(value){
+    return Math.round(value * 1000) / 1000;
 }
 
-function Staked(pid, tokenName, pending) {
+function Staked(pid, wantTokenName, staked) {
     this.pid = pid;
-    this.tokenName = tokenName;
-    this.pending = pending;
+    this.wantTokenName = wantTokenName;
+    this.staked = staked;
+
+    this.rewardTokenName = ko.observable();
+    this.pendingReward = ko.observable();
 }
 
 function HyruleAdapter() {
@@ -26,36 +27,41 @@ function HyruleAdapter() {
                 .then(value => this.poolLength = value);
         });
 
-    this.getPendingGRUPPE = function (pid, address, pool) {
-        this.contract.methods.pendingGRUPEE(pid, address)
-            .call()
-            .then(value => {
-                if (value > 0) {
-                    var pendingReward = fromWei(value);
-                    pool.pendings.push(new PendingReward(pid, 'GRUPPE', pendingReward));
-                }
-            })
-            .catch(reason => {
-                console.error(reason.message);
-            });
-
+    this.getStaked = function (pid, address, pool) {
         this.contract.methods.stakedWantTokens(pid, address)
             .call()
             .then(value => {
                 if (value > 0) {
                     var staked = fromWei(value);
-                    pool.pendings.push(new Staked(pid, 'RUPPE', staked));
+                    var info = new Staked(pid, 'RUPPE', round(staked));
+                    pool.pendings.push(info);
+
+                    this.getPendingReward(pid, address, info);
                 }
             })
             .catch(reason => {
                 console.error(reason.message);
             });
+    }
 
+    this.getPendingReward = function (pid, address, info) {
+        this.contract.methods.pendingGRUPEE(pid, address)
+            .call()
+            .then(value => {
+                if (value > 0) {
+                    var pendingReward = fromWei(value);
+                    info.rewardTokenName('GRUPPE');
+                    info.pendingReward(round(pendingReward));
+                }
+            })
+            .catch(reason => {
+                console.error(reason.message);
+            });
     }
 
     this.search = function (address, pool) {
         for (var pid = 0; pid < this.poolLength; pid++) {
-            this.getPendingGRUPPE(pid, address, pool);
+            this.getStaked(pid, address, pool);
         }
     }
 }
