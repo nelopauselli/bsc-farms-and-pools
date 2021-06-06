@@ -8,15 +8,17 @@ function round(value) {
     return Math.round(value * 1000) / 1000;
 }
 
-function Pool(adapter, name, imageUrl) {
-    this.adapter = adapter;
+function Pool(adapters, name, imageUrl) {
+    this.adapters = adapters;
     this.imageUrl = imageUrl;
     this.name = name;
 
     this.pendings = ko.observableArray();
 
     this.search = function (address) {
-        this.adapter.search(address, this);
+        this.adapters.forEach(adapter => {
+            adapter.search(address, this);
+        });
     }
 }
 
@@ -34,10 +36,9 @@ function ViewModel() {
     this.address = ko.observable();
 
     this.pools = [];
-    this.pools.push(new Pool(new PancakeFarmsAdapter(), 'Pancake Swap', '/img/pancake.png'));
-    this.pools.push(new Pool(new HyruleVaultsAdapter(), 'Hyrule Swap - Vaults', '/img/hyrule.png'));
-    this.pools.push(new Pool(new HyrulePoolsAdapter(), 'Hyrule Swap - Pools', '/img/hyrule.png'));
-    this.pools.push(new Pool(null, 'Ape Swap', '/img/ape.png'));
+    this.pools.push(new Pool([new PancakeFarmsAdapter(), new PancakePoolAdapter("trx")], 'Pancake Swap', '/img/pancake.png'));
+    this.pools.push(new Pool([new HyruleVaultsAdapter(), new HyrulePoolsAdapter()], 'Hyrule Swap', '/img/hyrule.png'));
+    this.pools.push(new Pool([], 'Ape Swap', '/img/ape.png'));
 
     this.address.subscribe(function (addr) {
         self.search(addr);
@@ -48,8 +49,7 @@ function ViewModel() {
             addr = this.address();
 
         this.pools.forEach(pool => {
-            if (pool.adapter)
-                pool.search(this.address());
+            pool.search(this.address());
         });
     }
 
@@ -62,7 +62,7 @@ function ViewModel() {
     //para esperar a que cargue los poolLength de los contratos
     setTimeout(() => {
         vm.address('0x5a31925d4d8bed0abd2b3e452644691be8739c67');
-    }, 1000);
+    }, 2000);
 
     document.web3 = new Web3('https://bsc-dataseed1.binance.org:443');
 })(ko, Web3);
