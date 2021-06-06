@@ -12,9 +12,9 @@ function HyrulePoolsAdapter() {
         this.contract.methods.userInfo(pid, address)
             .call()
             .then(userInfo => {
-                if (userInfo.amount > 0) {
-                    var staked = fromWei(userInfo.amount);
-                    var info = new Staked(pid, 'gRUPEE', round(staked));
+                var staked = round(fromWei(userInfo.amount));
+                if (staked > 0) {
+                    var info = new Staked(pid, 'gRUPEE',staked);
                     pool.pendings.push(info);
 
                     this.getPendingReward(pid, address, info);

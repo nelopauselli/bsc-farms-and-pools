@@ -15,7 +15,7 @@ function Pool(adapter, name, imageUrl) {
 
     this.pendings = ko.observableArray();
 
-    this.search=function(address){
+    this.search = function (address) {
         this.adapter.search(address, this);
     }
 }

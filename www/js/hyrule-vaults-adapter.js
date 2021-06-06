@@ -12,9 +12,9 @@ function HyruleVaultsAdapter() {
         this.contract.methods.stakedWantTokens(pid, address)
             .call()
             .then(value => {
-                if (value > 0) {
-                    var staked = fromWei(value);
-                    var info = new Staked(pid, 'RUPPE', round(staked));
+                var staked = round(fromWei(value));
+                if (staked > 0) {
+                    var info = new Staked(pid, 'RUPPE', staked);
                     pool.pendings.push(info);
 
                     this.getPendingReward(pid, address, info);
