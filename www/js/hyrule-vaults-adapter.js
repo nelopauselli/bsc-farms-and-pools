@@ -1,24 +1,5 @@
-const ether = 1000000000000000000;
-
-function fromWei(value) {
-    return value / ether;
-}
-
-function round(value){
-    return Math.round(value * 1000) / 1000;
-}
-
-function Staked(pid, wantTokenName, staked) {
-    this.pid = pid;
-    this.wantTokenName = wantTokenName;
-    this.staked = staked;
-
-    this.rewardTokenName = ko.observable();
-    this.pendingReward = ko.observable();
-}
-
-function HyruleAdapter() {
-    fetch('/ABIs/hyrule.json')
+function HyruleVaultsAdapter() {
+    fetch('/ABIs/hyrule-vaults.json')
         .then(response => response.json())
         .then(metadata => {
             this.contract = new document.web3.eth.Contract(metadata.ABI, metadata.address);
