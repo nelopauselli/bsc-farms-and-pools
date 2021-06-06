@@ -34,7 +34,7 @@ function ViewModel() {
     this.address = ko.observable();
 
     this.pools = [];
-    this.pools.push(new Pool(null, 'Pancake Swap', '/img/pancake.png'));
+    this.pools.push(new Pool(new PancakeFarmsAdapter(), 'Pancake Swap', '/img/pancake.png'));
     this.pools.push(new Pool(new HyruleVaultsAdapter(), 'Hyrule Swap - Vaults', '/img/hyrule.png'));
     this.pools.push(new Pool(new HyrulePoolsAdapter(), 'Hyrule Swap - Pools', '/img/hyrule.png'));
     this.pools.push(new Pool(null, 'Ape Swap', '/img/ape.png'));
