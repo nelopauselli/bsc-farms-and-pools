@@ -22,11 +22,11 @@ function Pool(adapters, name, imageUrl) {
     }
 }
 
-function Staked(pid, wantTokenName, staked) {
+function Staked(pid, staked) {
     this.pid = pid;
-    this.wantTokenName = wantTokenName;
     this.staked = staked;
 
+    this.wantTokenName = ko.observable();
     this.rewardTokenName = ko.observable();
     this.pendingReward = ko.observable();
 }
@@ -38,7 +38,7 @@ function ViewModel() {
     this.pools = [];
     this.pools.push(new Pool([new PancakeFarmsAdapter(), new PancakePoolAdapter("trx")], 'Pancake Swap', '/img/pancake.png'));
     this.pools.push(new Pool([new HyruleVaultsAdapter(), new HyrulePoolsAdapter()], 'Hyrule Swap', '/img/hyrule.png'));
-    this.pools.push(new Pool([], 'Ape Swap', '/img/ape.png'));
+    this.pools.push(new Pool([new ApeFarmsAdapter()], 'Ape Swap', '/img/ape.png'));
 
     this.address.subscribe(function (addr) {
         self.search(addr);
@@ -62,7 +62,7 @@ function ViewModel() {
     //para esperar a que cargue los poolLength de los contratos
     setTimeout(() => {
         vm.address('0x5a31925d4d8bed0abd2b3e452644691be8739c67');
-    }, 2000);
+    }, 1000);
 
     document.web3 = new Web3('https://bsc-dataseed1.binance.org:443');
 })(ko, Web3);
