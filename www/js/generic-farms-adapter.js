@@ -3,35 +3,40 @@ function getTokenSymbol(address) {
     return contract.methods.symbol().call();
 }
 
-function FarmsAdapter(address) {
-    fetch('/ABIs/pancake-farms.json')
-        .then(response => response.json())
-        .then(abi => {
-            this.contract = new document.web3.eth.Contract(abi, address);
-            this.contract.methods.poolLength()
-                .call()
-                .then(value => this.poolLength = value);
+function FarmsAdapter(options) {
+    if (typeof options === 'string')
+        options = { address: options };
 
-            console.log(this.contract.methods);
-            
-            this.contract.methods.cake()
-                .call()
-                .then(tokenRewardContract => {
-                    getTokenSymbol(tokenRewardContract)
-                        .then(symbol => {
-                            console.log(symbol);
-                            this.wantTokenName = symbol;
-                        })
-                });
+    this.options = Object.assign({
+        abi: genericPoolAbi,
+        wantTokenMethod: "cake()",
+        rewardTokenMethod: "pendingCake(uint256,address)",
+        getStakedMethod: "userInfo(uint256,address)",
+        userInfoAmountProperty: "amount",
+        poolInfoLpProperty: "lpToken"
+    }, options);
+
+    this.contract = new document.web3.eth.Contract(this.options.abi, this.options.address);
+    this.contract.methods.poolLength()
+        .call()
+        .then(value => this.poolLength = value);
+
+    this.contract.methods[this.options.wantTokenMethod]()
+        .call()
+        .then(tokenRewardContract => {
+            getTokenSymbol(tokenRewardContract)
+                .then(symbol => { this.wantTokenName = symbol; })
         });
 
-
-
     this.getStaked = function (pid, address, pool) {
-        this.contract.methods.userInfo(pid, address)
+        this.contract.methods[this.options.getStakedMethod](pid, address)
             .call()
-            .then(userInfo => {
-                var staked = round(fromWei(userInfo.amount));
+            .then(response => {
+                var value = typeof response === 'object'
+                    ? response[this.options.userInfoAmountProperty]
+                    : parseInt(response);
+
+                var staked = round(fromWei(value));
                 if (staked > 0) {
                     var info = new Staked(pid, staked);
                     info.rewardTokenName(this.wantTokenName);
@@ -41,7 +46,7 @@ function FarmsAdapter(address) {
                     this.contract.methods.poolInfo(pid)
                         .call()
                         .then(poolInfo => {
-                            getTokenSymbol(poolInfo.lpToken)
+                            getTokenSymbol(poolInfo[this.options.poolInfoLpProperty])
                                 .then(symbol => info.wantTokenName(symbol))
                         });
                 }
@@ -52,7 +57,7 @@ function FarmsAdapter(address) {
     }
 
     this.getPendingReward = function (pid, address, info) {
-        this.contract.methods.pendingCake(pid, address)
+        this.contract.methods[this.options.rewardTokenMethod](pid, address)
             .call()
             .then(value => {
                 if (value > 0) {

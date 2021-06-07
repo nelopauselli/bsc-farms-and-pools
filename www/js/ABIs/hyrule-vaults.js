@@ -1,30 +1,10 @@
-[
+var hyruleVaultAbi = [
     {
         "inputs": [
             {
-                "internalType": "contract CakeToken",
-                "name": "_cake",
-                "type": "address"
-            },
-            {
-                "internalType": "contract SyrupBar",
-                "name": "_syrup",
-                "type": "address"
-            },
-            {
                 "internalType": "address",
-                "name": "_devaddr",
+                "name": "_grupee",
                 "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_cakePerBlock",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_startBlock",
-                "type": "uint256"
             }
         ],
         "stateMutability": "nonpayable",
@@ -126,7 +106,33 @@
     },
     {
         "inputs": [],
-        "name": "BONUS_MULTIPLIER",
+        "name": "GRUPEE",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "GRUPEEMaxSupply",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "GRUPEEPerBlock",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -146,13 +152,18 @@
             },
             {
                 "internalType": "contract IBEP20",
-                "name": "_lpToken",
+                "name": "_want",
                 "type": "address"
             },
             {
                 "internalType": "bool",
                 "name": "_withUpdate",
                 "type": "bool"
+            },
+            {
+                "internalType": "address",
+                "name": "_strategy",
+                "type": "address"
             }
         ],
         "name": "add",
@@ -162,25 +173,12 @@
     },
     {
         "inputs": [],
-        "name": "cake",
+        "name": "burnAddress",
         "outputs": [
             {
-                "internalType": "contract CakeToken",
+                "internalType": "address",
                 "name": "",
                 "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "cakePerBlock",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
             }
         ],
         "stateMutability": "view",
@@ -207,51 +205,12 @@
     {
         "inputs": [
             {
-                "internalType": "address",
-                "name": "_devaddr",
-                "type": "address"
-            }
-        ],
-        "name": "dev",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "devaddr",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
                 "internalType": "uint256",
                 "name": "_pid",
                 "type": "uint256"
             }
         ],
         "name": "emergencyWithdraw",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "enterStaking",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -283,12 +242,17 @@
     {
         "inputs": [
             {
+                "internalType": "address",
+                "name": "_token",
+                "type": "address"
+            },
+            {
                 "internalType": "uint256",
                 "name": "_amount",
                 "type": "uint256"
             }
         ],
-        "name": "leaveStaking",
+        "name": "inCaseTokensGetStuck",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -298,32 +262,6 @@
         "name": "massUpdatePools",
         "outputs": [],
         "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_pid",
-                "type": "uint256"
-            }
-        ],
-        "name": "migrate",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "migrator",
-        "outputs": [
-            {
-                "internalType": "contract IMigratorChef",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -352,7 +290,7 @@
                 "type": "address"
             }
         ],
-        "name": "pendingCake",
+        "name": "pendingGRUPEE",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -375,7 +313,7 @@
         "outputs": [
             {
                 "internalType": "contract IBEP20",
-                "name": "lpToken",
+                "name": "want",
                 "type": "address"
             },
             {
@@ -390,8 +328,13 @@
             },
             {
                 "internalType": "uint256",
-                "name": "accCakePerShare",
+                "name": "accGRupeePerShare",
                 "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "strategy",
+                "type": "address"
             }
         ],
         "stateMutability": "view",
@@ -443,14 +386,25 @@
     {
         "inputs": [
             {
-                "internalType": "contract IMigratorChef",
-                "name": "_migrator",
+                "internalType": "uint256",
+                "name": "_pid",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "_user",
                 "type": "address"
             }
         ],
-        "name": "setMigrator",
-        "outputs": [],
-        "stateMutability": "nonpayable",
+        "name": "stakedWantTokens",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -468,12 +422,12 @@
     },
     {
         "inputs": [],
-        "name": "syrup",
+        "name": "teamAllocated",
         "outputs": [
             {
-                "internalType": "contract SyrupBar",
+                "internalType": "uint256",
                 "name": "",
-                "type": "address"
+                "type": "uint256"
             }
         ],
         "stateMutability": "view",
@@ -509,19 +463,6 @@
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "multiplierNumber",
-                "type": "uint256"
-            }
-        ],
-        "name": "updateMultiplier",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
                 "name": "_pid",
                 "type": "uint256"
             }
@@ -548,7 +489,7 @@
         "outputs": [
             {
                 "internalType": "uint256",
-                "name": "amount",
+                "name": "shares",
                 "type": "uint256"
             },
             {
@@ -577,5 +518,18 @@
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_pid",
+                "type": "uint256"
+            }
+        ],
+        "name": "withdrawAll",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
     }
-]
+];

@@ -39,7 +39,7 @@ function ViewModel() {
     this.pools.push(new Pool([new PancakeFarmsAdapter(), new PancakePoolAdapter("trx")], 'Pancake Swap', '/img/pancake.png'));
     this.pools.push(new Pool([new HyruleVaultsAdapter(), new HyrulePoolsAdapter()], 'Hyrule Swap', '/img/hyrule.png'));
     this.pools.push(new Pool([new ApeFarmsAdapter()], 'Ape Swap', '/img/ape.png'));
-
+    
     this.address.subscribe(function (addr) {
         self.search(addr);
     });
@@ -56,6 +56,8 @@ function ViewModel() {
 }
 
 (function (ko, Web3) {
+    document.web3 = new Web3('https://bsc-dataseed1.binance.org:443');
+    
     var vm = new ViewModel();
     ko.applyBindings(vm);
 
@@ -64,5 +66,4 @@ function ViewModel() {
         vm.address('0x5a31925d4d8bed0abd2b3e452644691be8739c67');
     }, 1000);
 
-    document.web3 = new Web3('https://bsc-dataseed1.binance.org:443');
 })(ko, Web3);
