@@ -3,6 +3,13 @@ function PancakePoolAdapter(token) {
         .then(response => response.json())
         .then(metadata => {
             this.contract = new document.web3.eth.Contract(metadata.ABI, metadata.address);
+
+            this.contract.methods.stakedToken()
+                .call()
+                .then(tokenRewardContract => {
+                    getTokenSymbol(tokenRewardContract)
+                        .then(symbol => { this.wantTokenName = symbol; })
+                });
         });
 
     this.getStaked = function (address, pool) {
@@ -11,10 +18,17 @@ function PancakePoolAdapter(token) {
             .then(userInfo => {
                 var staked = round(fromWei(userInfo.amount));
                 if (staked > 0) {
-                    var info = new Staked('?', 'CAKE', staked);
+                    var info = new Staked('?', staked);
+                    info.wantTokenName(this.wantTokenName);
                     pool.pendings.push(info);
 
                     this.getPendingReward(address, info);
+                    this.contract.methods.rewardToken()
+                        .call()
+                        .then(rewardTokenContract => {
+                            getTokenSymbol(rewardTokenContract)
+                                .then(symbol => info.rewardTokenName(symbol))
+                        });
                 }
             })
             .catch(reason => {
@@ -28,7 +42,6 @@ function PancakePoolAdapter(token) {
             .then(value => {
                 if (value > 0) {
                     var pendingReward = fromWei(value);
-                    info.rewardTokenName('TRX');
                     info.pendingReward(round(pendingReward));
                 }
             })
