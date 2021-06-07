@@ -1,6 +1,18 @@
+var symbols = {};
+
 function getTokenSymbol(address) {
-    var contract = new document.web3.eth.Contract(bep20abi, address);
-    return contract.methods.symbol().call();
+    if (symbols[address] === undefined) {
+        var contract = new document.web3.eth.Contract(bep20abi, address);
+        return contract.methods.symbol().call().then(symbol => {
+            symbols[address] = symbol;
+            return symbol;
+        });
+    } else {
+        return new Promise((resolve, reject) => {
+            var symbol = symbols[address];
+            resolve(symbol);
+        });
+    }
 }
 
 function FarmsAdapter(options) {
@@ -52,7 +64,7 @@ function FarmsAdapter(options) {
                 }
             })
             .catch(reason => {
-                console.error(reason.message);
+                console.error(`error in pid ${pid} of contract ${this.options.address}: ${reason.message}`);
             });
     }
 
