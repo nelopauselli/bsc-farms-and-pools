@@ -70,6 +70,12 @@ function ViewModel() {
         ]
         , 'Ape Swap', '/img/ape.png'));
 
+    this.pools.push(new Pool(
+        [
+            new Watcher(new GooseVaultsAdapter('0x3f648151f5d591718327aa27d2ee25edf1b435d8')),
+        ]
+        , 'Goose Finance', '/img/goose.png'));
+''
     this.address.subscribe(function (addr) {
         self.search(addr);
     });
