@@ -19,7 +19,6 @@ function Watcher(adapter) {
                         .then(pendingReward => info.pendingReward(round(pendingReward)));
 
                     this.adapter.getPoolInfo(pid)
-                        .then(poolInfo => getTokenSymbol(poolInfo.wantToken))
                         .then(symbol => info.wantTokenName(symbol));
                 }
             })

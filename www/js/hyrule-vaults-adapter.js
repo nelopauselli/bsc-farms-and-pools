@@ -43,8 +43,6 @@ function HyruleVaultsAdapter(address) {
     this.getPoolInfo = (pid) => {
         return this.contract.methods.poolInfo(pid)
             .call()
-            .then(poolInfo => {
-                return { wantToken: poolInfo.want };
-            });
+            .then(poolInfo => getTokenSymbol(poolInfo.want));
     }
 }

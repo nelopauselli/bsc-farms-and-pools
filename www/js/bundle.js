@@ -8,6 +8,22 @@ function round(value) {
     return Math.round(value * 1000) / 1000;
 }
 
+var symbols = {};
+function getTokenSymbol(address) {
+    if (symbols[address] === undefined) {
+        var contract = new document.web3.eth.Contract(bep20abi, address);
+        return contract.methods.symbol().call().then(symbol => {
+            symbols[address] = symbol;
+            return symbol;
+        });
+    } else {
+        return new Promise((resolve, reject) => {
+            var symbol = symbols[address];
+            resolve(symbol);
+        });
+    }
+}
+
 function Pool(adapters, name, imageUrl) {
     this.adapters = adapters;
     this.imageUrl = imageUrl;
@@ -39,7 +55,7 @@ function ViewModel() {
     this.pools.push(new Pool(
         [
             new Watcher(new PancakeFarmsAdapter('0x73feaa1ee314f8c655e354234017be2193c9e24e')),
-            new PancakePoolAdapter("trx")
+            new Watcher(new PancakePoolAdapter('0x93e2867d9b74341c2d19101b7fbb81d6063cca4d', 'trx'))
         ],
         'Pancake Swap', '/img/pancake.png'));
     this.pools.push(new Pool(

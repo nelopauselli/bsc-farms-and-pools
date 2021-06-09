@@ -1,56 +1,44 @@
-function PancakePoolAdapter(token) {
-    fetch(`/ABIs/pancake-pool-${token}.json`)
-        .then(response => response.json())
-        .then(metadata => {
-            this.contract = new document.web3.eth.Contract(metadata.ABI, metadata.address);
+function PancakePoolAdapter(address, token) {
+    this.address = address;
+    this.abi = pancakePoolAbi;
+    this.token = token;
 
-            this.contract.methods.stakedToken()
-                .call()
-                .then(tokenRewardContract => {
-                    getTokenSymbol(tokenRewardContract)
-                        .then(symbol => { this.wantTokenName = symbol; })
-                });
-        });
+    this.init = () => {
+        this.contract =
+            new document.web3.eth.Contract(this.abi, this.address);
 
-    this.getStaked = function (address, pool) {
-        this.contract.methods.userInfo(address)
+        var info = { poolLength: 1 };
+        return this.contract.methods.stakedToken()
             .call()
-            .then(userInfo => {
-                var staked = round(fromWei(userInfo.amount));
-                if (staked > 0) {
-                    var info = new Staked('?', staked);
-                    info.wantTokenName(this.wantTokenName);
-                    pool.pendings.push(info);
-
-                    this.getPendingReward(address, info);
-                    this.contract.methods.rewardToken()
-                        .call()
-                        .then(rewardTokenContract => {
-                            getTokenSymbol(rewardTokenContract)
-                                .then(symbol => info.rewardTokenName(symbol))
-                        });
-                }
-            })
-            .catch(reason => {
-                console.error(reason.message);
+            .then(tokenRewardContract => {
+                return getTokenSymbol(tokenRewardContract)
+            }).then(symbol => {
+                info.wantTokenName = symbol;
+                return info;
             });
-    }
+    };
 
-    this.getPendingReward = function (address, info) {
-        this.contract.methods.pendingReward(address)
+    this.getStaked = (pid, address) => {
+        return this.contract.methods.userInfo(address)
+            .call()
+            .then(response => {
+                var value = response.amount;
+                var staked = round(fromWei(value));
+
+                return staked;
+            });
+    };
+
+    this.getPendingReward = (pid, address) => {
+        return this.contract.methods.pendingReward(address)
             .call()
             .then(value => {
-                if (value > 0) {
-                    var pendingReward = fromWei(value);
-                    info.pendingReward(round(pendingReward));
-                }
+                var pendingReward = fromWei(value);
+                return pendingReward;
             })
-            .catch(reason => {
-                console.error(reason.message);
-            });
     }
 
-    this.search = function (address, pool) {
-        this.getStaked(address, pool);
+    this.getPoolInfo = (pid) => {
+        return Promise.resolve(token);
     }
 }

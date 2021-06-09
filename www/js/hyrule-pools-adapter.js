@@ -44,8 +44,6 @@ function HyrulePoolsAdapter(address) {
     this.getPoolInfo = (pid) => {
         return this.contract.methods.poolInfo(pid)
             .call()
-            .then(poolInfo => {
-                return { wantToken: poolInfo.lpToken };
-            });
+            .then(poolInfo => getTokenSymbol(poolInfo.lpToken));
     }
 }
