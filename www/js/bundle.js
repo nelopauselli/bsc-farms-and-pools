@@ -44,9 +44,9 @@ function ViewModel() {
         'Pancake Swap', '/img/pancake.png'));
     this.pools.push(new Pool(
         [
-            new HyruleVaultsAdapter(),
-            new HyrulePoolsAdapter()
-        ],
+            new Watcher(new HyruleVaultsAdapter('0xd1b3d8ef5ac30a14690fbd05cf08905e1bf7d878')),
+            new Watcher(new HyrulePoolsAdapter('0x76bd7145b99fdf84064a082bf86a33198c6e9d09'))
+        ], 
         'Hyrule Swap', '/img/hyrule.png'));
     this.pools.push(new Pool(
         [
