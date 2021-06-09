@@ -55,7 +55,7 @@ function ViewModel() {
     this.pools.push(new Pool(
         [
             new Watcher(new PancakeFarmsAdapter('0x73feaa1ee314f8c655e354234017be2193c9e24e')),
-            new Watcher(new PancakePoolAdapter('0x93e2867d9b74341c2d19101b7fbb81d6063cca4d', 'trx'))
+            new Watcher(new PancakePoolAdapter('0x93e2867d9b74341c2d19101b7fbb81d6063cca4d'))
         ],
         'Pancake Swap', '/img/pancake.png'));
     this.pools.push(new Pool(

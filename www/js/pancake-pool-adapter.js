@@ -1,7 +1,6 @@
-function PancakePoolAdapter(address, token) {
+function PancakePoolAdapter(address) {
     this.address = address;
     this.abi = pancakePoolAbi;
-    this.token = token;
 
     this.init = () => {
         this.contract =
@@ -39,6 +38,8 @@ function PancakePoolAdapter(address, token) {
     }
 
     this.getPoolInfo = (pid) => {
-        return Promise.resolve(token);
+        return this.contract.methods.rewardToken()
+            .call()
+            .then(rewardToken => getTokenSymbol(rewardToken));
     }
 }
