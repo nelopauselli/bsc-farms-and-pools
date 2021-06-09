@@ -7,7 +7,7 @@ function PancakePoolAdapter(address) {
             new document.web3.eth.Contract(this.abi, this.address);
 
         var info = { poolLength: 1 };
-        return this.contract.methods.stakedToken()
+        return this.contract.methods.rewardToken()
             .call()
             .then(tokenRewardContract => {
                 return getTokenSymbol(tokenRewardContract)
@@ -38,8 +38,8 @@ function PancakePoolAdapter(address) {
     }
 
     this.getPoolInfo = (pid) => {
-        return this.contract.methods.rewardToken()
+        return this.contract.methods.stakedToken()
             .call()
-            .then(rewardToken => getTokenSymbol(rewardToken));
+            .then(stakedTokenContract => getTokenSymbol(stakedTokenContract));
     }
 }

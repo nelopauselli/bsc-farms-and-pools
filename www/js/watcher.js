@@ -15,8 +15,10 @@ function Watcher(adapter) {
                     info.rewardTokenName(this.wantTokenName);
                     pool.pendings.push(info);
 
+                    setInterval(()=>{
                     this.adapter.getPendingReward(pid, address)
                         .then(pendingReward => info.pendingReward(round(pendingReward)));
+                    }, 2000);
 
                     this.adapter.getPoolInfo(pid)
                         .then(symbol => info.wantTokenName(symbol));

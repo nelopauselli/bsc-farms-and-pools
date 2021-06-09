@@ -4,8 +4,9 @@ function fromWei(value) {
     return value / ether;
 }
 
+var decimals = Math.pow(10, 6);
 function round(value) {
-    return Math.round(value * 10000) / 10000;
+    return Math.round(value * decimals) / decimals;
 }
 
 var symbols = {};
@@ -32,6 +33,8 @@ function Pool(adapters, name, imageUrl) {
     this.pendings = ko.observableArray();
 
     this.search = function (address) {
+        this.pendings.removeAll();
+
         this.adapters.forEach(adapter => {
             adapter.search(address, this);
         });
