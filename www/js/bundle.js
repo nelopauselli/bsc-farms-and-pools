@@ -36,10 +36,24 @@ function ViewModel() {
     this.address = ko.observable();
 
     this.pools = [];
-    this.pools.push(new Pool([new PancakeFarmsAdapter(), new PancakePoolAdapter("trx")], 'Pancake Swap', '/img/pancake.png'));
-    this.pools.push(new Pool([new HyruleVaultsAdapter(), new HyrulePoolsAdapter()], 'Hyrule Swap', '/img/hyrule.png'));
-    this.pools.push(new Pool([new ApeFarmsAdapter()], 'Ape Swap', '/img/ape.png'));
-    
+    this.pools.push(new Pool(
+        [
+            new Watcher(new PancakeFarmsAdapter('0x73feaa1ee314f8c655e354234017be2193c9e24e')),
+            new PancakePoolAdapter("trx")
+        ],
+        'Pancake Swap', '/img/pancake.png'));
+    this.pools.push(new Pool(
+        [
+            new HyruleVaultsAdapter(),
+            new HyrulePoolsAdapter()
+        ],
+        'Hyrule Swap', '/img/hyrule.png'));
+    this.pools.push(new Pool(
+        [
+            new Watcher(new PancakeFarmsAdapter('0x5c8d727b265dbafaba67e050f2f739caeeb4a6f9')),
+        ]
+        , 'Ape Swap', '/img/ape.png'));
+
     this.address.subscribe(function (addr) {
         self.search(addr);
     });
@@ -57,7 +71,7 @@ function ViewModel() {
 
 (function (ko, Web3) {
     document.web3 = new Web3('https://bsc-dataseed1.binance.org:443');
-    
+
     var vm = new ViewModel();
     ko.applyBindings(vm);
 
