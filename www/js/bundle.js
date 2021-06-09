@@ -5,7 +5,7 @@ function fromWei(value) {
 }
 
 function round(value) {
-    return Math.round(value * 1000) / 1000;
+    return Math.round(value * 10000) / 10000;
 }
 
 var symbols = {};
@@ -52,17 +52,12 @@ function ViewModel() {
     this.address = ko.observable();
 
     this.pools = [];
-    this.pools.push(new Pool(
-        [
-            new Watcher(new PancakeFarmsAdapter('0x73feaa1ee314f8c655e354234017be2193c9e24e')),
-            new Watcher(new PancakePoolAdapter('0x93e2867d9b74341c2d19101b7fbb81d6063cca4d'))
-        ],
-        'Pancake Swap', '/img/pancake.png'));
+
     this.pools.push(new Pool(
         [
             new Watcher(new HyruleVaultsAdapter('0xd1b3d8ef5ac30a14690fbd05cf08905e1bf7d878')),
             new Watcher(new HyrulePoolsAdapter('0x76bd7145b99fdf84064a082bf86a33198c6e9d09'))
-        ], 
+        ],
         'Hyrule Swap', '/img/hyrule.png'));
     this.pools.push(new Pool(
         [
@@ -75,10 +70,19 @@ function ViewModel() {
             new Watcher(new GooseVaultsAdapter('0x3f648151f5d591718327aa27d2ee25edf1b435d8')),
         ]
         , 'Goose Finance', '/img/goose.png'));
-''
-    this.address.subscribe(function (addr) {
-        self.search(addr);
-    });
+    
+    var adapters =
+        [
+            new Watcher(new PancakeFarmsAdapter('0x73feaa1ee314f8c655e354234017be2193c9e24e')),
+        ];
+    pancakePools.forEach(addressPool =>
+        adapters.push(
+            new Watcher(new PancakePoolAdapter(addressPool))
+        ));
+
+    this.pools.push(new Pool(
+        adapters,
+        'Pancake Swap', '/img/pancake.png'));
 
     this.search = function (addr) {
         if (!addr)
@@ -89,6 +93,9 @@ function ViewModel() {
         });
     }
 
+    this.address.subscribe(function (addr) {
+        self.search(addr);
+    });
 }
 
 (function (ko, Web3) {
@@ -100,6 +107,6 @@ function ViewModel() {
     //para esperar a que cargue los poolLength de los contratos
     setTimeout(() => {
         vm.address('0x5a31925d4d8bed0abd2b3e452644691be8739c67');
-    }, 1000);
+    }, 2000);
 
 })(ko, Web3);
