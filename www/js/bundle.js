@@ -56,6 +56,8 @@ function Staked(pid, staked) {
     this.rewardTokenName = ko.observable();
     this.pendingReward = ko.observable();
     this.futureReward = ko.observable();
+
+    this.posibleReward = ko.computed(() => round(this.pendingReward() + this.futureReward()));
 }
 
 function getPancakeAdapters() {
