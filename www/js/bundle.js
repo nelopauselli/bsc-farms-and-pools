@@ -4,7 +4,7 @@ function fromWei(value) {
     return value / ether;
 }
 
-var decimals = Math.pow(10, 6);
+var decimals = Math.pow(10, 5);
 function round(value) {
     return Math.round(value * decimals) / decimals;
 }
@@ -32,7 +32,7 @@ function getTokenBalance(contractAddress, address) {
     });
 
 }
-function Pool(adapters, name, imageUrl) {
+function Pool(name, imageUrl, adapters) {
     this.adapters = adapters;
     this.imageUrl = imageUrl;
     this.name = name;
@@ -58,30 +58,7 @@ function Staked(pid, staked) {
     this.futureReward = ko.observable();
 }
 
-function ViewModel() {
-    var self = this;
-    this.address = ko.observable();
-
-    this.pools = [];
-
-    this.pools.push(new Pool(
-        [
-            new Watcher(new HyruleVaultsAdapter('0xd1b3d8ef5ac30a14690fbd05cf08905e1bf7d878')),
-            new Watcher(new HyrulePoolsAdapter('0x76bd7145b99fdf84064a082bf86a33198c6e9d09'))
-        ],
-        'Hyrule Swap', '/img/hyrule.png'));
-    this.pools.push(new Pool(
-        [
-            new Watcher(new PancakeFarmsAdapter('0x5c8d727b265dbafaba67e050f2f739caeeb4a6f9')),
-        ]
-        , 'Ape Swap', '/img/ape.png'));
-
-    this.pools.push(new Pool(
-        [
-            new Watcher(new GooseVaultsAdapter('0x3f648151f5d591718327aa27d2ee25edf1b435d8')),
-        ]
-        , 'Goose Finance', '/img/goose.png'));
-
+function getPancakeAdapters() {
     var adapters =
         [
             new Watcher(new PancakeFarmsAdapter('0x73feaa1ee314f8c655e354234017be2193c9e24e')),
@@ -90,10 +67,42 @@ function ViewModel() {
         adapters.push(
             new Watcher(new PancakePoolAdapter(addressPool))
         ));
+    return adapters;
+}
 
-    this.pools.push(new Pool(
-        adapters,
-        'Pancake Swap', '/img/pancake.png'));
+function getGooseAdapters() {
+    return [
+        new Watcher(new GooseVaultsAdapter('0x3f648151f5d591718327aa27d2ee25edf1b435d8')),
+    ]
+}
+
+function getHyruleAdapters() {
+    return [
+        new Watcher(new HyruleVaultsAdapter('0xd1b3d8ef5ac30a14690fbd05cf08905e1bf7d878')),
+        new Watcher(new HyrulePoolsAdapter('0x76bd7145b99fdf84064a082bf86a33198c6e9d09'))
+    ];
+}
+
+function getApeAdapters() {
+    return [
+        new Watcher(new PancakeFarmsAdapter('0x5c8d727b265dbafaba67e050f2f739caeeb4a6f9')),
+    ]
+}
+
+function ViewModel() {
+    var self = this;
+    this.address = ko.observable();
+
+    this.pools = [
+        new Pool('Pancake Swap', '/img/pancake.png', getPancakeAdapters()),
+        new Pool('Hyrule Swap', '/img/hyrule.png', getHyruleAdapters()),
+        new Pool('Ape Swap', '/img/ape.png', getApeAdapters()),
+        new Pool('Goose Finance', '/img/goose.png', getGooseAdapters())
+    ];
+
+    this.address.subscribe(function (addr) {
+        self.search(addr);
+    });
 
     this.search = function (addr) {
         if (!addr)
@@ -104,9 +113,6 @@ function ViewModel() {
         });
     }
 
-    this.address.subscribe(function (addr) {
-        self.search(addr);
-    });
 }
 
 (function (ko, Web3) {

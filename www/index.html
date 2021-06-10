@@ -34,36 +34,30 @@
 
     <div class="container-fluid">
         <div class="row" data-bind="foreach: pools">
-            <div class="col-sm-6 pb-4">
+            <div class="col-sm-6 col-md-4 col-lg-3 pb-4">
                 <div class="card text-white bg-secondary h-100">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img src="" class="img-fluid p-4" alt="" data-bind="attr: {src: imageUrl}">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title" data-bind="text: name"></h5>
-                                <div data-bind="foreach: pendings">
-                                        <div class="card text-white bg-secondary mb-2">
-                                            <div class="card-header" data-bind="text: pid">
-                                            </div>
-                                            <div class="card-body">
-                                                <h5 class="card-title">
-                                                    <span data-bind="text: staked"></span>
-                                                    <span data-bind="text: wantTokenName"></span>
-                                                </h5>
-                                                <p class="card-text">
-                                                    <label>Pending rewards:</label>
-                                                    <span data-bind="text: pendingReward"></span>
-                                                    <span data-bind="text: rewardTokenName"></span>
-                                                </p>
-                                            </div>
-                                            <div class="card-footer text-end">
-                                                <label>Future rewards:</label>
-                                                <span data-bind="text: futureReward"></span>
-                                                <span data-bind="text: rewardTokenName"></span>
-                                            </div>
-                                        </div>
+                    <img src="" class="card-img-top p-4" alt="" data-bind="attr: {src: imageUrl, alt: name}">
+                    <div class="card-body">
+                        <div data-bind="foreach: pendings">
+                            <div class="card text-white bg-secondary mb-2">
+                                <div class="card-header" data-bind="text: pid">
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <label>Staked:</label>
+                                        <span data-bind="text: staked"></span>
+                                        <span data-bind="text: wantTokenName"></span>
+                                    </h5>
+                                    <p class="card-text">
+                                        <label>Pending rewards:</label>
+                                        <span data-bind="text: pendingReward"></span>
+                                        <span data-bind="text: rewardTokenName"></span>
+                                    </p>
+                                    <div data-bind="if: futureReward">
+                                        <label>Future rewards:</label>
+                                        <span data-bind="text: futureReward"></span>
+                                        <span data-bind="text: rewardTokenName"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -71,6 +65,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.3.5/web3.min.js"
