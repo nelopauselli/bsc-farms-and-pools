@@ -10,9 +10,16 @@ function PancakePoolAdapter(address) {
         return this.contract.methods.rewardToken()
             .call()
             .then(tokenRewardContract => {
+                this.tokenRewardContract = tokenRewardContract;
                 return getTokenSymbol(tokenRewardContract)
             }).then(symbol => {
                 info.wantTokenName = symbol;
+                return this.contract.methods.rewardPerBlock().call();
+            }).then(rewardPerBlock => {
+                info.rewardPerBlock = rewardPerBlock;
+                return this.contract.methods.bonusEndBlock().call();
+            }).then(endBlock => {
+                info.endBlock = endBlock;
                 return info;
             });
     };
@@ -23,7 +30,8 @@ function PancakePoolAdapter(address) {
             .then(response => {
                 var value = response.amount;
                 var staked = round(fromWei(value));
-
+                if (staked > 0)
+                    console.log(`staked ${staked} in ${this.address}`);
                 return staked;
             });
     };
@@ -40,6 +48,13 @@ function PancakePoolAdapter(address) {
     this.getPoolInfo = (pid) => {
         return this.contract.methods.stakedToken()
             .call()
-            .then(stakedTokenContract => getTokenSymbol(stakedTokenContract));
+            .then(stakedTokenContract => {
+                this.stakedTokenContract = stakedTokenContract;
+                return getTokenSymbol(stakedTokenContract);
+            });
     }
+
+    this.getStakedBalance = (pid) => {
+        return getTokenBalance(this.stakedTokenContract, this.address);
+    };
 }

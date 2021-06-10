@@ -25,6 +25,13 @@ function getTokenSymbol(address) {
     }
 }
 
+function getTokenBalance(contractAddress, address) {
+    var contract = new document.web3.eth.Contract(bep20abi, contractAddress);
+    return contract.methods.balanceOf(address).call().then(amount => {
+        return amount;
+    });
+
+}
 function Pool(adapters, name, imageUrl) {
     this.adapters = adapters;
     this.imageUrl = imageUrl;
@@ -48,6 +55,7 @@ function Staked(pid, staked) {
     this.wantTokenName = ko.observable();
     this.rewardTokenName = ko.observable();
     this.pendingReward = ko.observable();
+    this.futureReward = ko.observable();
 }
 
 function ViewModel() {
@@ -73,7 +81,7 @@ function ViewModel() {
             new Watcher(new GooseVaultsAdapter('0x3f648151f5d591718327aa27d2ee25edf1b435d8')),
         ]
         , 'Goose Finance', '/img/goose.png'));
-    
+
     var adapters =
         [
             new Watcher(new PancakeFarmsAdapter('0x73feaa1ee314f8c655e354234017be2193c9e24e')),
@@ -110,6 +118,6 @@ function ViewModel() {
     //para esperar a que cargue los poolLength de los contratos
     setTimeout(() => {
         vm.address('0x5a31925d4d8bed0abd2b3e452644691be8739c67');
-    }, 2000);
+    }, 4000);
 
 })(ko, Web3);

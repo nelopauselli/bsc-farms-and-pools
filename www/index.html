@@ -43,16 +43,28 @@
                         <div class="col-md-8">
                             <div class="card-body">
                                 <h5 class="card-title" data-bind="text: name"></h5>
-                                <ul data-bind="foreach: pendings">
-                                    <li>
-                                        #<span data-bind="text: pid"></span>
-                                        <span data-bind="text: staked"></span>
-                                        <span data-bind="text: wantTokenName"></span>
-                                        /
-                                        <span data-bind="text: pendingReward"></span>
-                                        <span data-bind="text: rewardTokenName"></span>
-                                    </li>
-                                </ul>
+                                <div data-bind="foreach: pendings">
+                                        <div class="card text-white bg-secondary mb-2">
+                                            <div class="card-header" data-bind="text: pid">
+                                            </div>
+                                            <div class="card-body">
+                                                <h5 class="card-title">
+                                                    <span data-bind="text: staked"></span>
+                                                    <span data-bind="text: wantTokenName"></span>
+                                                </h5>
+                                                <p class="card-text">
+                                                    <label>Pending rewards:</label>
+                                                    <span data-bind="text: pendingReward"></span>
+                                                    <span data-bind="text: rewardTokenName"></span>
+                                                </p>
+                                            </div>
+                                            <div class="card-footer text-end">
+                                                <label>Future rewards:</label>
+                                                <span data-bind="text: futureReward"></span>
+                                                <span data-bind="text: rewardTokenName"></span>
+                                            </div>
+                                        </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -81,10 +93,10 @@
     <script src="js/ABIs/goose-vaults.js"></script>
 
     <script src="js/watcher.js"></script>
-    
+
     <script src="js/hyrule-vaults-adapter.js"></script>
     <script src="js/hyrule-pools-adapter.js"></script>
-    
+
     <script src="js/pancake-farms-adapter.js"></script>
     <script src="js/pancake-pool-adapter.js"></script>
     <script src="js/pancake-pools.js"></script>
