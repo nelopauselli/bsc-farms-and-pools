@@ -39,14 +39,14 @@ function Watcher(adapter) {
         });
     }
     
-    this.getStaked = function (pid, address, pool) {
+    this.getStaked = function (pid, address, callback) {
         this.adapter.getStaked(pid, address)
             .then(staked => {
                 if (staked > 0) {
                     this.userStaked = staked;
                     var info = new Staked(`${this.wantTokenName} Pool`, staked);
                     info.rewardTokenName(this.wantTokenName);
-                    pool.pendings.push(info);
+                    callback(info);
 
                     setInterval(() => {
                         this.adapter.getPendingReward(pid, address)
@@ -67,11 +67,11 @@ function Watcher(adapter) {
             });
     }
 
-    this.search = (address, pool) => {
+    this.search = (address, callback) => {
         console.log(`Recorriendo ${this.poolLength} pools`);
 
         for (var pid = 0; pid < this.poolLength; pid++) {
-            this.getStaked(pid, address, pool);
+            this.getStaked(pid, address, callback);
         }
     };
 }

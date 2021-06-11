@@ -43,8 +43,12 @@ function Pool(name, imageUrl, adapters) {
     this.search = function (address) {
         this.pendings.removeAll();
 
+        this.add = info => {
+            this.pendings.push(info);
+        };
+
         this.adapters.forEach(adapter => {
-            adapter.search(address, this);
+            adapter.search(address, this.add);
         });
     }
 }
@@ -119,18 +123,20 @@ function ViewModel() {
 }
 
 async function loadWalletAsync(vm) {
-    window.ethereum.on('accountsChanged', function (accounts) {
-        console.log(accounts);
-        if (accounts[0]) {
-            vm.address(accounts[0]);
-        }
-    });
+    if (window.ethereum !== undefined) {
+        window.ethereum.on('accountsChanged', function (accounts) {
+            console.log(accounts);
+            if (accounts[0]) {
+                vm.address(accounts[0]);
+            }
+        });
 
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    if (accounts.length > 0) {
-        const account = accounts[0];
-        if (account) {
-            setTimeout(() => { vm.address(account); }, 2500);
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        if (accounts.length > 0) {
+            const account = accounts[0];
+            if (account) {
+                setTimeout(() => { vm.address(account); }, 2500);
+            }
         }
     }
 }
