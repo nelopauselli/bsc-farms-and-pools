@@ -1,5 +1,7 @@
 function Watcher(adapter) {
     this.adapter = adapter;
+    this.ready = false;
+    this.error = false;
 
     this.adapter.init()
         .then(r => {
@@ -7,6 +9,12 @@ function Watcher(adapter) {
             this.wantTokenName = r.wantTokenName;
             this.endBlock = r.endBlock;
             this.rewardPerBlock = r.rewardPerBlock;
+
+            console.log(`adapter con ${this.adapter.address} inicializado`);
+            this.ready = true;
+        }).catch(reason => {
+            console.error(`error inicializando adapter con ${this.adapter.address}: ${reason}`);
+            this.error = true;
         });
 
     this.futureReward = function (pid, address) {
@@ -38,7 +46,7 @@ function Watcher(adapter) {
             }
         });
     }
-    
+
     this.getStaked = function (pid, address, callback) {
         this.adapter.getStaked(pid, address)
             .then(staked => {
@@ -68,6 +76,16 @@ function Watcher(adapter) {
     }
 
     this.search = (address, callback) => {
+        if (!this.ready) {
+            if (!this.error) {
+                console.log('Esperando que el adapter esté inicializado');
+                setTimeout(() => this.search(address, callback), 1000);
+            } else {
+                console.log('El adapter no pudo ser inicializado');
+            }
+            return;
+        }
+
         console.log(`Recorriendo ${this.poolLength} pools`);
 
         for (var pid = 0; pid < this.poolLength; pid++) {
