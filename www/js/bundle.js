@@ -32,6 +32,7 @@ function getTokenBalance(contractAddress, address) {
     });
 
 }
+
 function Pool(name, imageUrl, adapters) {
     this.adapters = adapters;
     this.imageUrl = imageUrl;
@@ -117,15 +118,29 @@ function ViewModel() {
 
 }
 
+async function loadWalletAsync(vm) {
+    window.ethereum.on('accountsChanged', function (accounts) {
+        console.log(accounts);
+        if (accounts[0]) {
+            vm.address(accounts[0]);
+        }
+    });
+
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    if (accounts.length > 0) {
+        const account = accounts[0];
+        if (account) {
+            setTimeout(() => { vm.address(account); }, 2500);
+        }
+    }
+}
+
 (function (ko, Web3) {
     document.web3 = new Web3('https://bsc-dataseed1.binance.org:443');
 
     var vm = new ViewModel();
     ko.applyBindings(vm);
 
-    //para esperar a que cargue los poolLength de los contratos
-    setTimeout(() => {
-        vm.address('0x5a31925d4d8bed0abd2b3e452644691be8739c67');
-    }, 4000);
+    loadWalletAsync(vm);
 
 })(ko, Web3);
