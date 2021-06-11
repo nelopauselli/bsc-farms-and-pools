@@ -135,7 +135,7 @@ async function loadWalletAsync(vm) {
         if (accounts.length > 0) {
             const account = accounts[0];
             if (account) {
-                setTimeout(() => { vm.address(account); }, 2500);
+                vm.address(account);
             }
         }
     }
