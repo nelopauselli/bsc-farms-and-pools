@@ -119,7 +119,6 @@ function ViewModel() {
             pool.search(this.address());
         });
     }
-
 }
 
 async function loadWalletAsync(vm) {
@@ -141,12 +140,26 @@ async function loadWalletAsync(vm) {
     }
 }
 
+async function initWeb3() {
+    if (window.ethereum !== undefined) {
+        console.log("usando ethereum");
+        document.web3 = new Web3(window.ethereum);
+    } else if (window.web3 !== undefined) {
+        console.log("usando web3");
+        document.web3 = new Web3(window.web3.currentProvider);
+    } else {
+        console.log("usando bsc por default");
+        document.web3 = new Web3('https://bsc-dataseed1.binance.org:443');
+    }
+}
+
 (function (ko, Web3) {
-    document.web3 = new Web3('https://bsc-dataseed1.binance.org:443');
+    initWeb3()
+        .then(() => {
+            var vm = new ViewModel();
+            ko.applyBindings(vm);
 
-    var vm = new ViewModel();
-    ko.applyBindings(vm);
-
-    loadWalletAsync(vm);
+            loadWalletAsync(vm);
+        });
 
 })(ko, Web3);
