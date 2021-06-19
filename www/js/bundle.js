@@ -4,9 +4,13 @@ function fromWei(value) {
     return value / ether;
 }
 
-var decimals = Math.pow(10, 5);
-function round(value) {
-    return Math.round(value * decimals) / decimals;
+function round(value, decimals) {
+    if (decimals === undefined) decimals = 5;
+    if (decimals == 0)
+        return Math.round(value);
+
+    var factor = Math.pow(10, decimals);
+    return Math.round(value * factor) / factor;
 }
 
 var symbols = {};
@@ -61,6 +65,7 @@ function Staked(pid, staked) {
     this.rewardTokenName = ko.observable();
     this.pendingReward = ko.observable();
     this.futureReward = ko.observable();
+    this.futureRewardTimestamp = ko.observable();
 
     this.posibleReward = ko.computed(() => round(this.pendingReward() + this.futureReward()));
 }

@@ -59,11 +59,13 @@
                                         <label>Future rewards:</label>
                                         <span data-bind="text: futureReward"></span>
                                         <span data-bind="text: rewardTokenName"></span>
+                                        (<span data-bind="text: futureRewardTimestamp"></span> days)
                                     </div>
                                     <div data-bind="if: futureReward">
                                         <label>Posible rewards:</label>
                                         <span data-bind="text: posibleReward"></span>
                                         <span data-bind="text: rewardTokenName"></span>
+                                        (<span data-bind="text: futureRewardTimestamp"></span> days)
                                     </div>
                                 </div>
                             </div>
@@ -82,6 +84,10 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.3.5/web3.min.js"
         integrity="sha512-S/O+gH5szs/+/dUylm15Jp/JZJsIoWlpSVMwT6yAS4Rh7kazaRUxSzFBwnqE2/jBphcr7xovTQJaopiEZAzi+A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
+        integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"

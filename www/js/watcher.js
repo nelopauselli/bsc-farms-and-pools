@@ -1,3 +1,5 @@
+const secondsPerDay = 24 * 60 * 60;
+
 function Watcher(adapter) {
     this.adapter = adapter;
     this.ready = false;
@@ -39,7 +41,10 @@ function Watcher(adapter) {
 
                                     var reward = multiplier * this.rewardPerBlock;
                                     var futureReward = this.userStaked * reward / stakedTokenSupply;
-                                    resolve(futureReward);
+                                    resolve({
+                                        blocksToEnd: Math.max(this.endBlock - blockNumber, 0),
+                                        futureReward: futureReward
+                                    });
                                 });
                         }
                     }).catch(reject);
@@ -58,12 +63,34 @@ function Watcher(adapter) {
 
                     setInterval(() => {
                         this.adapter.getPendingReward(pid, address)
-                            .then(pendingReward => info.pendingReward(round(pendingReward)));
-                    }, 5000);
-
-                    setInterval(() => {
+                            .then(pendingReward => {
+                                let now = moment();
+                                if (info.startAt === undefined) {
+                                    info.startAt = now;
+                                    info.startPendingReward = pendingReward;
+                                }
+                                info.lastPendingRewardAt = now;
+                                info.lastPendingReward = pendingReward;
+                                info.pendingReward(round(pendingReward));
+                            });
                         this.futureReward(pid, address)
-                            .then(futureReward => info.futureReward(round(futureReward)));
+                            .then(response => {
+                                if (response !== undefined) {
+                                    info.futureReward(round(response.futureReward));
+                                    let days = response.blocksToEnd / 28000;
+                                    info.futureRewardTimestamp(round(days, 0));
+                                }
+                                else if (info.lastPendingRewardAt) {
+                                    let seconds = moment.duration(info.lastPendingRewardAt.diff(info.startAt)).asSeconds();
+                                    if (seconds > 10) {
+                                        let rewards = info.lastPendingReward - info.startPendingReward;
+                                        console.log(`rewards ${rewards}|seconds ${seconds}`);
+
+                                        info.futureReward(round(rewards * secondsPerDay * 28 / seconds));
+                                        info.futureRewardTimestamp(28);
+                                    }
+                                }
+                            });
                     }, 5000);
 
                     this.adapter.getPoolInfo(pid)
