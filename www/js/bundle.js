@@ -107,7 +107,7 @@ function ViewModel() {
 
     this.pools = [
         new Pool('Pancake Swap', '/img/pancake.png', getPancakeAdapters()),
-        new Pool('Hyrule Swap', '/img/hyrule.png', getHyruleAdapters()),
+        //new Pool('Hyrule Swap', '/img/hyrule.png', getHyruleAdapters()),
         new Pool('Ape Swap', '/img/ape.png', getApeAdapters()),
         new Pool('Goose Finance', '/img/goose.png', getGooseAdapters())
     ];
